@@ -9,11 +9,12 @@
 %   JJW 1/8/2020
 
 
-function activeDirectories = getActiveDirectories()
+function [activeDirectories, activeMonkeyList] = getActiveDirectories()
 
-    monkeyWaterDataLoc = '/Volumes/fsmresfiles/Basic_Sciences/Phys/L_MillerLab/limblab/lab_folder/Lab-Wide Animal Info/WeekendWatering/';
+    %monkeyWaterDataLoc = dealWithSlashes('/Volumes/fsmresfiles/Basic_Sciences/Phys/L_MillerLab/limblab/lab_folder/Lab-Wide Animal Info/WeekendWatering/');
+    monkeyWaterDataLoc = dealWithSlashes('R:\Basic_Sciences\Phys\L_MillerLab\limblab\lab_folder\Lab-Wide Animal Info/WeekendWatering/');
     monkeyWaterData = 'MonkeyWaterData.xlsx';
-    dataFolders = dir('/Volumes/fsmresfiles/Basic_Sciences/Phys/L_MillerLab/data/');
+    dataFolders = dir(dealWithSlashes('R:/Basic_Sciences/Phys/L_MillerLab/data/'));
     
     currentMonkeyData = readtable([monkeyWaterDataLoc monkeyWaterData]);
     activeMonkeyList = currentMonkeyData.animalName;
