@@ -2,7 +2,7 @@ function xds = ProcessXdsWrapper(file, meta, workingFolder)
 
     params = setParams(meta);
     %this should point to working folder instead of server
-    xds = raw_to_xds([file.folder dealWithSlashes('\')], file.name, meta.mapFile.folder, meta.mapFile.name, params);
+    xds = raw_to_xds([workingFolder dealWithSlashes('\')], file.name, meta.mapFile.folder, meta.mapFile.name, params);
     
 end
 

@@ -86,6 +86,8 @@ function cdsTask = getCdsTask(task)
 
     if strcmpi(task, 'WM')
         cdsTask = 'WF';
+    elseif strcmpi(task, 'CO')
+        cdsTask = 'CObump';
     else
         cdsTask = task;
     end

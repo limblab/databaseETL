@@ -6,6 +6,11 @@
 %workingFolder = dealWithSlashes('/Users/josephinewallner/Desktop/working');
 workingFolder = 'C:\Users\jjw2788\Desktop\workingFolder';
 dataFolder = dealWithSlashes('R:/Basic_Sciences/Phys/L_MillerLab/data/');
+
+addpath(genpath(dealWithSlashes('C:\Users\jjw2788\Documents\GitHub\ClassyDataAnalysis')))
+addpath(genpath(dealWithSlashes('C:\Users\jjw2788\Documents\GitHub\Data-Quality')))
+addpath(genpath(dealWithSlashes('C:\Users\jjw2788\Documents\GitHub\xds_matlab')))
+
 mapFileFolder = '';
 
 %% Check connections
@@ -18,7 +23,7 @@ mapFileFolder = '';
 %       1. check server for new files - maybe include a 'process' and 'doNotProcess' folder
 %       2. create list of files & relevant info from server location/file
 %       metadata
-checkDate = datetime('today') - caldays(40);
+checkDate = datetime('today') - caldays(300);
 [activeDirectories, activeMonkeyList] = getActiveDirectories();
 %newFiles = findNewFiles(dataFolder, activeDirectories, checkDate);
 
