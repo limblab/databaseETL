@@ -57,18 +57,14 @@ handles.output = hObject;
 
 % Fill the monkey_name menu
 monkeyNames = {'Snap', 'Crackle', 'Pop', 'Greyson', 'Duncan', 'Han'}; %get from MonkeyWaterData.xlsx
-handles.nameMenu.String = str
-
-handles.nameMenu.String = strjoin(monkeyNames(:,1),'\n'); % update the menu values
-%handles.monkeys= monkeyNames;
-%handles.monkeyName = monkeyNames(:,1);
-
+ccm_ids = {'ccmSnap', 'ccmCrackle', 'ccmPop', 'ccmGreyson', 'ccmDuncan', 'ccmHan'};
+handles.ccm_ids = ccm_ids;
+handles.nameMenu.String = monkeyNames;
+handles.monkeys = monkeyNames;
 
 % get the arrays available for the initial monkey
 arrays = {'M1', 'Cuneate', 'S1', 'DRG'}; %where should come from for now?  
 handles.arrayMenu.String = arrays;
-
-
 
 % fill the task name menu
 taskNames = {'Center Out', 'Center Out - Bump', 'Wrist Flexion - Box', 'Wrist Flexion - Handle', 'Bump Report - Ring', 'Bump Report - Center Out' 'Random Target', 'Out Out Reach'};
@@ -102,8 +98,6 @@ handles.dailyIncrement = 1;
 handles.localStorage = '';
 handles.recordStatus = 0;
 
-% keyboard;
-
 % Update handles structure
 guidata(hObject, handles);
 
@@ -119,7 +113,8 @@ function varargout = cerebus_record_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+%varargout{1} = handles.output;
+varargout{1}  = handles.recordStatus;
 
 
 % --- Executes on selection change in nameMenu.
@@ -132,7 +127,7 @@ function nameMenu_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from nameMenu
 contents = cellstr(get(hObject,'String'));
 handles.monkeyName = contents{get(hObject,'Value')}; % which monkey did we chose?
-handles.day.ccm_id = handles.monkeys{get(hObject,'Value'),2};
+handles.day.ccm_id = handles.ccm_ids{hObject.Value};
 
 % get the arrays available for that monkey
 arrays = {'M1', 'Cuneate', 'S1', 'DRG'};
@@ -147,8 +142,7 @@ else
     handles.arrayText.Enable = 'on';
     handles.arrayMenu.String = arrays;
     handles.spike_files.array_serial = arrays{1}; % update the currently recorded array
-end    
-
+end
 
 guidata(hObject,handles); % we have to store this before checking mandatory fields
 enableRecording(hObject); % see whether manadatory fields have been filled out
@@ -366,8 +360,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-
 function labEdit_Callback(hObject, eventdata, handles)
 % hObject    handle to labEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -380,8 +372,6 @@ handles.session.lab_num = str2double(get(hObject,'String'));
 guidata(hObject,handles); % store befoe checking fields
 enableRecording(hObject); % make sure everything is properly filled out
 
-
-
 % --- Executes during object creation, after setting all properties.
 function labEdit_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to labEdit (see GCBO)
@@ -393,8 +383,6 @@ function labEdit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
 
 function ccfEdit_Callback(hObject, eventdata, handles)
 % hObject    handle to ccfEdit (see GCBO)
@@ -414,7 +402,6 @@ end
 guidata(hObject,handles); % store before checking fields
 enableRecording(hObject); % make sure everything mandatory is properly filled out
 
-
 % --- Executes during object creation, after setting all properties.
 function ccfEdit_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to ccfEdit (see GCBO)
@@ -426,7 +413,6 @@ function ccfEdit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 % --- Executes on button press in ccfButton.
 function ccfButton_Callback(hObject, eventdata, handles)
@@ -442,7 +428,6 @@ end
 
 guidata(hObject,handles); % store before checking fields
 enableRecording(hObject); % check all mandatory fields
-
 
 
 % --- Executes on button press in timeCheckBox.
@@ -484,7 +469,7 @@ function timeEdit_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
+% Hint: edit controls usually have a white background on Windows.ily
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -500,18 +485,17 @@ function recordButton_Callback(hObject, eventdata, handles)
 % this is the big mamma-jamma. Connect to  cbMex with the desired ccf file,
 % then start recording, all according to plans.
 keyboard;
-
 if handles.recordStatus == 0
-    cbmex('open');
-    cbmex('ccf','send',handles.ccfEdit.String)
+    %cbmex('open');
+    %cbmex('ccf','send',handles.ccfEdit.String)
 
-    % last folder should be today's date
-    localStorageTemp = strsplit(handles.localStorage,filesep); 
+%     % last folder should be today's date
+%     localStorageTemp = strsplit(handles.localStorage,filesep); 
     todayDate = datestr(now,'yyyymmdd');
-    if ~strcmp(localStorageTemp{end},todayDate)
-        handles.localStorage = [handles.localStorage,filesep,todayDate];
-        handles.storageEdit.String = handles.localStorage;
-    end
+%     if ~strcmp(localStorageTemp{end},todayDate)
+%         handles.localStorage = [handles.localStorage,filesep,todayDate];
+%         handles.storageEdit.String = handles.localStorage;
+%     end
 
     % create proper file name
     % make the daily incrementation number properly put together
@@ -526,14 +510,14 @@ if handles.recordStatus == 0
     handles.fileName = [todayDate,'_',handles.monkeyName,'_',handles.session.task_name,...
         '_',dI,'.nev'];
 
-    % start the recording
-    % if we're set to record for a specific amount of time
-    if handles.timeCheckBox.Value
-        handles.timerHandle = timer('ExecutionMode','fixedRate','ObjectVisibility','off',...
-            'Period',1,'TasksToExecute',handles.timeEdit.String,'StopFcn',{@stopRecording,handles},...
-            'TimerFcn',{@countDown,handles});
-    end
-    cbmex('fileconfig',handles.fileName,'',1); % get the cerebus going
+%     % start the recording
+%     % if we're set to record for a specific amount of time
+%     if handles.timeCheckBox.Value
+%         handles.timerHandle = timer('ExecutionMode','fixedRate','ObjectVisibility','off',...
+%             'Period',1,'TasksToExecute',handles.timeEdit.String,'StopFcn',{@stopRecording,handles},...
+%             'TimerFcn',{@countDown,handles});
+%     end
+%     cbmex('fileconfig',handles.fileName,'',1); % get the cerebus going
 
     % alter the GUI so everything is greyed out, change text
     handles.recordButton.String = 'Stop Recording';
@@ -543,36 +527,34 @@ if handles.recordStatus == 0
     
     
 else
-    stopRecording(handles)
+    % --- Stops the recording --- %
+    handles.recordButton.String = 'Start Recording';
+    set(handles.recordingButtonGroup.Children(:),'Enable','on'); % only turn on the recording stuff, not the daily recording stuff
+    set(handles.dayButton,'Enable','on'); % after recording a session we can end the day if we want
+    handles.recordStatus = 0;
+    handles.dailyIncrement = handles.dailyIncrement + 1;
+    
+    %create another row entry for Data Log
+    %pass 
+    
 end
 
 guidata(hObject,handles);
 
-
-% --- Stops the recording ---
-function stopRecording(handles)
-% handles   structure with handle of main figure
-cbmex('fileconfig',handles.fileName,'',0); % stop recording
-
-handles.recordButton.String = 'Start Recording';
-handles.recordingStatus = 0;
-set(handles.recordingButtonGroup.Children(:),'Enable','on'); % only turn on the recording stuff, not the daily recording stuff
-set(handles.dayButton,'Enable','on'); % after recording a session we can end the day if we want
-
-
-
-
-
-
-
-
 % --- Executes on button press in dayButton.
 function dayButton_Callback(hObject, eventdata, handles)
-% hObject    handle to dayButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+    % hObject    handle to recordButton (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
 
-
+    %check end amounts that matter - end water, notes, time, etc
+    keyboard;
+    set(handles.dayButton, 'Enable', 'off');
+    set(handles.recordButton, 'Enable', 'off');
+    handles.recordStatus = -1;
+    
+    guidata(hObject,handles);
+    
 
 function connectorEdit_Callback(hObject, eventdata, handles)
 % hObject    handle to connectorEdit (see GCBO)
