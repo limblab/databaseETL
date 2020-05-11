@@ -1,13 +1,11 @@
 % Wrapper function for assessing emg data quality - at the file level
 %   loads data & computes DQ metrics
-%n
-%   Inputs: fileName, serverFolder, workingFolder
+%
+%   Inputs: fileName, workingFolder, metadata
 %
 %   Output: 
-%       data - og data from file
-%       labels - muscle labels
-%       labelIdx - pointer from muscle labels to data positioning
-%       monkey
+%       dq              :   dataQuality analysis structure
+%       summaryTable    :   Summary of the analyses performed
 
 
 function[dq, summaryTable] = DataQualityWrapperEmg(file, workingFolder, meta) 
