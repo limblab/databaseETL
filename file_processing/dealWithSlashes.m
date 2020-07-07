@@ -6,7 +6,7 @@ function adaptedString = dealWithSlashes(oldString)
         adaptedString(adaptedString == '/') = '\';       
     else
         %replace any / or \ with /
-        adapatedString(adpatedString == '\') = '/';     
+        adaptedString(adaptedString == '\') = '/';     
     end
     
 end
