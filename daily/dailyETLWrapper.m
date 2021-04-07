@@ -3,15 +3,11 @@
 %% Define environment
 %addpath('/Users/josephinewallner/Documents/MATLAB/Addons/datajoint-matlab-master')
 %addpath('/Users/josephinewallner/Desktop/LabWork/MillerLab/dataJoint/ETL/file_processing')
-%workingFolder = dealWithSlashes('/Users/josephinewallner/Desktop/working');
-workingFolder = 'C:\Users\jjw2788\Desktop\workingFolder';
-dataFolder = dealWithSlashes('R:/Basic_Sciences/Phys/L_MillerLab/data/');
+workingFolder = 'C:\Users\benja\Desktop\working';
+addpath(genpath(dealWithSlashes('C:\Users\benja\Desktop\Miller_Lab\Github_Host_Folder\ClassyDataAnalysis')))
+addpath(genpath(dealWithSlashes('C:\Users\benja\Desktop\Miller_Lab\Github_Host_Folder\Data-Quality')))
+addpath(genpath(dealWithSlashes('C:\Users\benja\Desktop\Miller_Lab\Github_Host_Folder\xds_matlab')))
 
-addpath(genpath(dealWithSlashes('C:\Users\jjw2788\Documents\GitHub\ClassyDataAnalysis')))
-addpath(genpath(dealWithSlashes('C:\Users\jjw2788\Documents\GitHub\Data-Quality')))
-addpath(genpath(dealWithSlashes('C:\Users\jjw2788\Documents\GitHub\xds_matlab')))
-
-mapFileFolder = '';
 
 %% Check connections
 
@@ -25,15 +21,16 @@ mapFileFolder = '';
 %       metadata
 checkDate = datetime('today') - caldays(300);
 [activeDirectories, activeMonkeyList] = getActiveDirectories();
-%newFiles = findNewFiles(dataFolder, activeDirectories, checkDate);
 
 %% Loop through directories
 for i = 2:length(activeDirectories) %set to 2 for testing
-    %try
-        DirectoryWrapper([dataFolder activeDirectories{i}], workingFolder, checkDate, activeMonkeyList);
-    %catch
-        %error(['Issue processing ' activeDirectories{i}])
-    %end
+    try
+        DirectoryWrapper(activeDirectories{i}, workingFolder, checkDate, activeMonkeyList);
+    catch ME
+        newexception = MException.last;
+        save(['R:\Basic_Sciences\Phys\L_MillerLab\limblab\User_folders\Ben\matlabErrorFolder\' checkDate activeDirectories{i} '.mat'], newexception);
+        error(['Issue processing ' activeDirectories{i} '; exception saved to folder'])
+    end
 end
 
 

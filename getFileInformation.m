@@ -1,75 +1,46 @@
 %% !!!This has not been tested or commented!!!!
-function meta = getFileInformation(file, activeMonkeyList)
+function [df, fileParams] = getFileInformation(file, activeMonkeyList, checkDate)
     
-    taskList = {'WF', 'WM', 'RW', 'RT', 'CO', 'cobump', 'cobumpmove', 'kramer', 'bumpdir'}; %keep this list somewhere else
-    nameParts = strsplit(file.name(1:end-4), '_');
+    df = struct;
+    taskList = {'RW','CO','CObump','COactpas','BD','DCO','multi_gadget','UNT','RP','none','Unknown','SABES','UCK','OOR','WF','TRT','RT','RR','AFC', 'FR', 'WS','WI','WM','WB','key','PG'}; %keep this list somewhere else
+    nameParts = strsplit(file{2}(1:end-4), '_');
     
-    meta.task = '';
-    meta.date = '';
-    meta.monkey = '';
+    df.nev_file_name = file{2};
+    df.nev_file_location = file{1};
+    df.date_recorded = checkDate;
+
     for iParts = 1:length(nameParts)
-        %check if it's a date
-        if isempty(meta.date) && ~isempty(regexp(nameParts{iParts}, '^20(19|20)[01-12][01-31]', 'once'))
-            meta.date = nameParts{iParts};
-        elseif isempty(meta.task) && any(strcmpi(taskList, nameParts{iParts}))
+        if isempty(fileParams.task) && any(strcmpi(taskList, nameParts{iParts}))
             %meta.task = getTaskName(nameParts{iParts});
-            meta.task = getCdsTask(nameParts{iParts});
-        elseif isempty(meta.monkey) && any(strcmpi(activeMonkeyList, nameParts{iParts}))
-            meta.monkey = nameParts{iParts};
+            df.task = getCdsTask(nameParts{iParts});
+        elseif isempty(fileParams.monkey) && any(strcmpi(activeMonkeyList, nameParts{iParts}))
+            df.monkey = nameParts{iParts};
         end
     end
     
-    meta.mapFile = getMapFile(meta.monkey, date);
-    meta.lab = getLab(meta.monkey); %what's the best way to do this? can start with monkey, but this isn't super reliable
-    meta.experimenter = getExperimenter(meta.monkey); %get from monkey watering sheet (won't work for historical loading)
-
-end
-
-function mapFile = getMapFile(monkey, date)
-    %go look on the server
-    %find file that corresponds to that monkey, with the most recent date -
-    %will be different for manual loading - will need to be specified there
+    fileParams = struct;
+    fileParams.monkey_name = df.monkey;
+    fileParams.task_name = df.task;
+    fileParams.file_dir = df.nev_file_location;
+    fileParams.file_dir = df.nev_file_name;
+    fileParams.array_name = getArray(fileParams.monkey, fileParams.date);
+    fileParams.mapFile = getMapFile(fileParams.monkey, fileParams.date);
+    fileParams.bin_width = .01;
     
-    %find animal folder on server
-    animalFolders = dir('R:\Basic_Sciences\Phys\L_MillerLab\limblab\lab_folder\Animal-Miscellany');
-    for i = 1:length(animalFolders)
-        if animalFolders(i).isdir && ~isempty(regexp(animalFolders(i).name, ['^' monkey '.*'], 'once'))
-            folder = animalFolders(i);
-            break
-        end
-    end
-    
-    %find map file folder in the monkey's directory
-    subFolders = dir([folder.folder dealWithSlashes('\') folder.name]);
-    for i = 1:length(subFolders)
-        if subFolders(i).isdir && ~isempty(regexpi(subFolders(i).name, '.*map.*', 'once'))
-            mapFileFolder = subFolders(i);
-            break
-        end
-    end
-    
-    %find the most recent map file (.cmp)
-    mapFiles = dir([mapFileFolder.folder dealWithSlashes('\') mapFileFolder.name dealWithSlashes('\*\')  '*.cmp']);
-    mapFile = mapFiles(1);
-    if length(mapFiles) > 1
-        %find the most recent date
-        for i = 1:length(mapFiles)
-            if datetime(mapFiles(i).date) > datetime(mapFile.date)
-                mapFile = mapFiles(i);
-            end
-        end
-    end
-       
-end
-
-%this will eventually come from data collection interface
-function lab = getLab(monkey)
-    if any(strcmpi({'Yanny', 'Greyson', 'Pop'}, monkey))
-        lab = 1;
+    if contains(fileParams.array_name, 'M1') %not really sure if this is the best way to do this
+        fileParams.lab = 1;
     else
-        lab = 6;
+        fileParams.lab = 6;
     end
+    
+    fileParams.ran_by = getExperimenter(fileParams.monkey); %get from monkey watering sheet (won't work for historical loading)
+    fileParams.sorted = 0;
+    fileParams.requires_raw_emg = 0;
+
 end
+
+
+
 
 %this will eventually come from data collection interface
 function experimenter = getExperimenter(monkey)
@@ -80,16 +51,4 @@ function experimenter = getExperimenter(monkey)
     %get first in charge
     experimenter = currentMonkeyData.personInCharge(strcmpi(currentMonkeyData.animalName, monkey));
     experimenter = char(experimenter);
-end
-
-function cdsTask = getCdsTask(task)
-
-    if strcmpi(task, 'WM')
-        cdsTask = 'WF';
-    elseif strcmpi(task, 'CO')
-        cdsTask = 'CObump';
-    else
-        cdsTask = task;
-    end
-
 end

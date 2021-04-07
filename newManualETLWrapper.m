@@ -86,19 +86,23 @@ fileParams.file_dir = fileDir.folder;
 fileParams.file_name = fileDir.name;
 fileParams.monkey_name = df.monkey;
 fileParams.task_name = df.task;
-fileParams.array_name = getArray(monkey, df.date_recorded);
+fileParams.array_name = getArray(df.monkey, df.date_recorded);
 
 
-if contains(fileParams.array_name, 'M1')
-    fileParams.lab = 1;
-else
-    fileParams.lab = 6;
-end
+%if contains(fileParams.array_name, 'M1')
+%    fileParams.lab = 1;
+%else
+%    fileParams.lab = 6;
+%end
 
-fileParams.ran_by = input("Who was the experimenter for this file? Enter answer without any spaces", 's');
-if isempty(fileParams.ran_by)
-    fileParams.ran_by = 'Unknown';
-end
+fileParams.lab = -1;
+
+%fileParams.ran_by = input("Who was the experimenter for this file? Enter answer without any spaces", 's');
+%if isempty(fileParams.ran_by)
+%    fileParams.ran_by = 'Unknown';
+%end
+
+fileParams.ran_by = 'Unknown';
 
 fileParams.sorted = 0;
 fileParams.requires_raw_emg = 0;
