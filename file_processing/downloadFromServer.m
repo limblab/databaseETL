@@ -1,7 +1,7 @@
 function [] = downloadFromServer(file, workingFolder)
 
-    serverLocation = file.folder;
-    tmp = strsplit(file.name, '.');
+    serverLocation = file{1};
+    tmp = strsplit(file{2}, '.');
     fileName = tmp{1};
     
     %get list of all files with the same name
