@@ -20,4 +20,4 @@ for i = 1:length(dataDir)
 end
 
 monkeyList = unique(monkeyList);
-monkeyList = setdiff(monkeyList, {'archive', 'cds', 'Behavior', 'IMU', 'OldCerebusTest', 'Rats', 'Test data', '.', '..', 'CompiledCOFiles', 'DeepLabCutVids', 'Backed', 'LoadCell'});
+monkeyList = setdiff(monkeyList, {'archive', 'cds', 'Behavior', 'IMU', 'OldCerebusTest', 'Rats', 'Test data', '.', '..', 'CompiledCOFiles', 'DeepLabCutVids', 'Backed', 'LoadCell', 'DLC'});
