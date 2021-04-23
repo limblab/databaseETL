@@ -14,7 +14,7 @@ function [] = manualDirectoryWrapper(serverFolder)
 %       3f. If error occurs, catch it. Save all errors from directory in
 %       one big cell array and save it to some folder somewhere. 
 
-workingFolder ='C:\Users\benja\Desktop\Miller_Lab\working' ;
+workingFolder ='C:\Users\bps6383\Desktop\working';
 
 
 
